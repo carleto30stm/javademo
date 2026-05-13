@@ -22,7 +22,9 @@ jobs:
           cache: maven
 
       - name: Build y tests
-        run: ./mvnw clean verify -P test
+        run: |
+          chmod +x mvnw
+          ./mvnw clean verify -P test
 
       - name: Subir reporte de tests
         if: always()
