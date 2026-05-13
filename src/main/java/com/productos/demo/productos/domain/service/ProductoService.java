@@ -1,11 +1,14 @@
 package com.productos.demo.productos.domain.service;
 
+import com.productos.demo.common.config.CacheConfig;
 import com.productos.demo.common.exception.CodigoEanDuplicadoException;
 import com.productos.demo.common.exception.ProductoNoEncontradoException;
 import com.productos.demo.productos.api.dto.ProductoUpdateRequest;
 import com.productos.demo.productos.domain.model.Producto;
 import com.productos.demo.productos.domain.repository.ProductoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +26,7 @@ public class ProductoService {
      * Obtiene todos los productos con paginación y búsqueda
      */
     @Transactional(readOnly = true)
+    @Cacheable(value = CacheConfig.PRODUCTOS_CACHE, key = "#page + '-' + #limit + '-' + (#search != null ? #search : 'all') + '-' + #sortBy + '-' + #sortDir")
     public Page<Producto> listarProductos(
         int page,
         int limit,
@@ -48,6 +52,7 @@ public class ProductoService {
      * Obtiene un producto por su ID
      */
     @Transactional(readOnly = true)
+    @Cacheable(value = CacheConfig.PRODUCTO_BY_ID_CACHE, key = "#id")
     public Producto obtenerProductoPorId(Long id) {
         return productoRepository.findById(id)
             .orElseThrow(() -> new ProductoNoEncontradoException(id));
@@ -58,6 +63,7 @@ public class ProductoService {
      * Valida que el código EAN sea único
      */
     @Transactional
+    @CacheEvict(value = {CacheConfig.PRODUCTOS_CACHE, CacheConfig.PRODUCTO_BY_ID_CACHE}, allEntries = true)
     public Producto crearProducto(Producto producto) {
         // Validar unicidad del código EAN
         if (productoRepository.existsByCodigoEan(producto.getCodigoEan())) {
@@ -73,6 +79,7 @@ public class ProductoService {
      * Valida que el código EAN sea único si se está modificando.
      */
     @Transactional
+    @CacheEvict(value = {CacheConfig.PRODUCTOS_CACHE, CacheConfig.PRODUCTO_BY_ID_CACHE}, allEntries = true)
     public Producto actualizarProducto(Long id, ProductoUpdateRequest request) {
         Producto producto = obtenerProductoPorId(id);
 
@@ -95,6 +102,7 @@ public class ProductoService {
      * Elimina un producto por su ID
      */
     @Transactional
+    @CacheEvict(value = {CacheConfig.PRODUCTOS_CACHE, CacheConfig.PRODUCTO_BY_ID_CACHE}, allEntries = true)
     public void eliminarProducto(Long id) {
         Producto producto = obtenerProductoPorId(id);
         productoRepository.delete(producto);

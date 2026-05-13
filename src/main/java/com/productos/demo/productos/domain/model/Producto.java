@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -20,7 +21,8 @@ import java.time.Instant;
     @Index(name = "idx_codigo_ean", columnList = "codigo_ean", unique = true),
     @Index(name = "idx_nombre", columnList = "nombre")
 })
-public class Producto {
+public class Producto implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

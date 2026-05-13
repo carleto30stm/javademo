@@ -24,7 +24,7 @@ public class ProductoController implements ProductoApi {
     private final Clock clock;
 
     @Override
-    public ResponseEntity<ProductoListResponse> listar(
+    public ResponseEntity<ProductoListResponse> listarProductos(
         int page,
         int limit,
         String search,
@@ -56,24 +56,24 @@ public class ProductoController implements ProductoApi {
     }
 
     @Override
-    public ResponseEntity<ProductoResponse> crear(ProductoCreateRequest request) {
+    public ResponseEntity<ProductoResponse> crearProducto(ProductoCreateRequest request) {
         Producto productoGuardado = productoService.crearProducto(productoMapper.toDomain(request));
         return ResponseEntity.status(HttpStatus.CREATED).body(productoMapper.toResponse(productoGuardado));
     }
 
     @Override
-    public ResponseEntity<ProductoResponse> obtenerPorId(Long id) {
+    public ResponseEntity<ProductoResponse> obtenerProductoPorId(Long id) {
         return ResponseEntity.ok(productoMapper.toResponse(productoService.obtenerProductoPorId(id)));
     }
 
     @Override
-    public ResponseEntity<ProductoResponse> actualizar(Long id, ProductoUpdateRequest request) {
+    public ResponseEntity<ProductoResponse> actualizarProducto(Long id, ProductoUpdateRequest request) {
         Producto productoGuardado = productoService.actualizarProducto(id, request);
         return ResponseEntity.ok(productoMapper.toResponse(productoGuardado));
     }
 
     @Override
-    public ResponseEntity<Void> eliminar(Long id) {
+    public ResponseEntity<Void> eliminarProductoPorId(Long id) {
         productoService.eliminarProducto(id);
         return ResponseEntity.noContent().build();
     }

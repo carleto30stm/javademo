@@ -26,7 +26,7 @@ public interface ProductoApi {
      * Obtiene un listado paginado de productos
      */
     @GetMapping
-    ResponseEntity<ProductoListResponse> listar(
+    ResponseEntity<ProductoListResponse> listarProductos(
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int limit,
         @RequestParam(required = false) String search,
@@ -39,7 +39,7 @@ public interface ProductoApi {
      * Crea un nuevo producto
      */
     @PostMapping
-    ResponseEntity<ProductoResponse> crear(
+    ResponseEntity<ProductoResponse> crearProducto(
         @Valid @RequestBody ProductoCreateRequest request
     );
 
@@ -48,7 +48,7 @@ public interface ProductoApi {
      * Obtiene un producto por su ID
      */
     @GetMapping("/{id}")
-    ResponseEntity<ProductoResponse> obtenerPorId(
+    ResponseEntity<ProductoResponse> obtenerProductoPorId(
         @PathVariable Long id
     );
 
@@ -57,7 +57,7 @@ public interface ProductoApi {
      * Actualiza un producto existente
      */
     @PutMapping("/{id}")
-    ResponseEntity<ProductoResponse> actualizar(
+    ResponseEntity<ProductoResponse> actualizarProducto(
         @PathVariable Long id,
         @Valid @RequestBody ProductoUpdateRequest request
     );
@@ -67,7 +67,7 @@ public interface ProductoApi {
      * Elimina un producto
      */
     @DeleteMapping("/{id}")
-    ResponseEntity<Void> eliminar(
+    ResponseEntity<Void> eliminarProductoPorId(
         @PathVariable Long id
     );
 }
