@@ -1,6 +1,10 @@
 
 Este repositorio contiene la implementación del Backend para el **Módulo de Gestión de Productos*, desarrollado con **Java 21** y **Spring Boot**.
 
+## Redis##
+levantar redis localmente antes de levantar el proyecto
+    `docker-compose up -d`
+    
 El servicio está diseñado para centralizar la consulta, validación y reporte de productos, sirviendo datos a la interfaz de usuario.
 
 ## 🏛️ Estrategia de Arquitectura: Vertical Slices (Funcionalidad)
