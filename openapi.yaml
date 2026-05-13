@@ -1,0 +1,493 @@
+openapi: 3.0.0
+info:
+  title: Gestión de Productos API
+  description: API RESTful para la gestión de productos con enfoque Contract-First
+  version: 1.0.0
+  contact:
+    name: Equipo de Desarrollo
+  license:
+    name: MIT
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Servidor Local
+  - url: https://api.ejemplo.com/api/v1
+    description: Servidor Producción
+
+tags:
+  - name: Productos
+    description: Operaciones CRUD de productos
+
+paths:
+  /productos:
+    get:
+      tags:
+        - Productos
+      summary: Listar productos con paginación
+      description: Obtiene un listado paginado de productos con soporte para búsqueda y filtros
+      operationId: listProducts
+      parameters:
+        - name: page
+          in: query
+          description: Número de página (comenzando desde 0)
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: limit
+          in: query
+          description: Cantidad de registros por página
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+        - name: search
+          in: query
+          description: Búsqueda por nombre o código EAN
+          required: false
+          schema:
+            type: string
+            maxLength: 100
+        - name: sortBy
+          in: query
+          description: Campo para ordenar (nombre, precio, stock, producto_id)
+          required: false
+          schema:
+            type: string
+            enum: [nombre, precio, stock, producto_id]
+            default: producto_id
+        - name: sortDir
+          in: query
+          description: Dirección de ordenamiento
+          required: false
+          schema:
+            type: string
+            enum: [ASC, DESC]
+            default: ASC
+      responses:
+        '200':
+          description: Listado de productos obtenido correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductoListResponse'
+        '400':
+          description: Parámetros inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      tags:
+        - Productos
+      summary: Crear un nuevo producto
+      description: Crea un nuevo producto en el sistema
+      operationId: createProduct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductoCreateRequest'
+      responses:
+        '201':
+          description: Producto creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductoResponse'
+        '400':
+          description: Datos de entrada inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: El código EAN ya existe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /productos/{id}:
+    get:
+      tags:
+        - Productos
+      summary: Obtener un producto por ID
+      description: Recupera los detalles de un producto específico
+      operationId: getProductById
+      parameters:
+        - name: id
+          in: path
+          description: ID del producto
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '200':
+          description: Producto encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductoResponse'
+        '404':
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    put:
+      tags:
+        - Productos
+      summary: Actualizar un producto
+      description: Actualiza los datos de un producto existente
+      operationId: updateProduct
+      parameters:
+        - name: id
+          in: path
+          description: ID del producto
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductoUpdateRequest'
+      responses:
+        '200':
+          description: Producto actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductoResponse'
+        '400':
+          description: Datos de entrada inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: El código EAN ya está en uso por otro producto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      tags:
+        - Productos
+      summary: Eliminar un producto
+      description: Elimina un producto del sistema
+      operationId: deleteProduct
+      parameters:
+        - name: id
+          in: path
+          description: ID del producto
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '204':
+          description: Producto eliminado exitosamente
+        '404':
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    ProductoListResponse:
+      type: object
+      required:
+        - data
+        - pagination
+        - timestamp
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductoResponse'
+          description: Lista de productos
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp de la respuesta en UTC
+        traceId:
+          type: string
+          description: ID único para trazabilidad de la solicitud
+
+    ProductoResponse:
+      type: object
+      required:
+        - producto_id
+        - codigo_ean
+        - nombre
+        - descripcion
+        - precio
+        - stock
+        - created_at
+        - updated_at
+      properties:
+        producto_id:
+          type: integer
+          format: int64
+          description: Identificador único del producto
+          example: 1
+        codigo_ean:
+          type: string
+          pattern: '^\d{13}$'
+          description: Código EAN de 13 dígitos
+          example: "4006381333931"
+        nombre:
+          type: string
+          minLength: 3
+          maxLength: 100
+          description: Nombre del producto
+          example: "Laptop Dell XPS 13"
+        descripcion:
+          type: string
+          minLength: 10
+          maxLength: 500
+          description: Descripción detallada del producto
+          example: "Laptop ultraportátil de alta performance con pantalla FHD"
+        precio:
+          type: number
+          format: decimal
+          minimum: 0.01
+          exclusiveMinimum: true
+          description: Precio del producto en USD
+          example: 999.99
+        stock:
+          type: integer
+          minimum: 0
+          description: Cantidad disponible en inventario
+          example: 45
+        created_at:
+          type: string
+          format: date-time
+          description: Fecha de creación del registro
+          example: "2026-05-12T10:30:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: Última fecha de actualización del registro
+          example: "2026-05-12T14:45:30Z"
+
+    ProductoCreateRequest:
+      type: object
+      required:
+        - codigo_ean
+        - nombre
+        - descripcion
+        - precio
+        - stock
+      properties:
+        codigo_ean:
+          type: string
+          pattern: '^\d{13}$'
+          description: Código EAN de 13 dígitos (único)
+          example: "4006381333931"
+        nombre:
+          type: string
+          minLength: 3
+          maxLength: 100
+          description: Nombre del producto
+          example: "Laptop Dell XPS 13"
+        descripcion:
+          type: string
+          minLength: 10
+          maxLength: 500
+          description: Descripción detallada
+          example: "Laptop ultraportátil de alta performance"
+        precio:
+          type: number
+          format: decimal
+          minimum: 0.01
+          exclusiveMinimum: true
+          description: Precio en USD
+          example: 999.99
+        stock:
+          type: integer
+          minimum: 0
+          description: Stock inicial
+          example: 50
+
+    ProductoUpdateRequest:
+      type: object
+      properties:
+        codigo_ean:
+          type: string
+          pattern: '^\d{13}$'
+          description: Código EAN de 13 dígitos (único)
+          example: "4006381333931"
+        nombre:
+          type: string
+          minLength: 3
+          maxLength: 100
+          description: Nombre del producto
+          example: "Laptop Dell XPS 13"
+        descripcion:
+          type: string
+          minLength: 10
+          maxLength: 500
+          description: Descripción detallada
+          example: "Laptop ultraportátil de alta performance"
+        precio:
+          type: number
+          format: decimal
+          minimum: 0.01
+          exclusiveMinimum: true
+          description: Precio en USD
+          example: 999.99
+        stock:
+          type: integer
+          minimum: 0
+          description: Stock actual
+          example: 45
+
+    Pagination:
+      type: object
+      required:
+        - page
+        - limit
+        - total
+        - totalPages
+      properties:
+        page:
+          type: integer
+          minimum: 0
+          description: Número de página actual
+          example: 0
+        limit:
+          type: integer
+          minimum: 1
+          description: Registros por página
+          example: 10
+        total:
+          type: integer
+          minimum: 0
+          description: Total de registros
+          example: 156
+        totalPages:
+          type: integer
+          minimum: 0
+          description: Total de páginas
+          example: 16
+
+    ErrorResponse:
+      type: object
+      required:
+        - timestamp
+        - status
+        - error
+        - codigo
+        - message
+        - path
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp del error en UTC
+          example: "2026-05-12T10:30:00Z"
+        traceId:
+          type: string
+          description: ID único para trazabilidad
+          example: "req-987654321"
+        status:
+          type: integer
+          description: Código HTTP
+          example: 400
+        error:
+          type: string
+          description: Tipo de error HTTP
+          example: "Bad Request"
+        codigo:
+          type: string
+          description: Código de error específico de negocio
+          example: "ERROR_VALIDACION"
+        message:
+          type: string
+          description: Mensaje de error legible
+          example: "Datos de entrada inválidos"
+        path:
+          type: string
+          description: Ruta del endpoint que causó el error
+          example: "/api/v1/productos"
+        details:
+          type: array
+          description: Detalles específicos de validación
+          items:
+            $ref: '#/components/schemas/ErrorDetail'
+
+    ErrorDetail:
+      type: object
+      required:
+        - target
+        - code
+        - message
+      properties:
+        target:
+          type: string
+          description: Campo o parámetro con error
+          example: "precio"
+        code:
+          type: string
+          description: Código específico del error
+          example: "INVALID_VALUE"
+        message:
+          type: string
+          description: Descripción del problema
+          example: "El precio debe ser mayor a 0"

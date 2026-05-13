@@ -1,0 +1,217 @@
+{
+  "ejemplos": {
+    "listProductos": {
+      "descripcion": "Respuesta GET /api/v1/productos?page=0&limit=10&search=laptop",
+      "statusCode": 200,
+      "response": {
+        "data": [
+          {
+            "producto_id": 1,
+            "codigo_ean": "4006381333931",
+            "nombre": "Laptop Dell XPS 13",
+            "descripcion": "Laptop ultraportátil de alta performance con pantalla OLED 4K, procesador Intel Core i7, 16GB RAM DDR5, SSD 512GB NVMe",
+            "precio": 1299.99,
+            "stock": 45,
+            "created_at": "2026-05-01T08:15:30Z",
+            "updated_at": "2026-05-12T14:45:30Z"
+          },
+          {
+            "producto_id": 2,
+            "codigo_ean": "8845781001234",
+            "nombre": "Laptop HP Pavilion 15",
+            "descripcion": "Laptop con pantalla HD de 15.6 pulgadas, procesador AMD Ryzen 5, 8GB RAM, SSD 256GB, ideal para tareas cotidianas",
+            "precio": 599.99,
+            "stock": 23,
+            "created_at": "2026-05-02T09:20:15Z",
+            "updated_at": "2026-05-10T11:30:00Z"
+          },
+          {
+            "producto_id": 3,
+            "codigo_ean": "9876543210987",
+            "nombre": "Laptop ASUS VivoBook 14",
+            "descripcion": "Ultrabook ligero con pantalla Full HD, procesador Intel Core i5, 8GB RAM LPDDR4X, SSD 512GB",
+            "precio": 749.99,
+            "stock": 12,
+            "created_at": "2026-05-05T10:00:45Z",
+            "updated_at": "2026-05-11T16:20:10Z"
+          }
+        ],
+        "pagination": {
+          "page": 0,
+          "limit": 10,
+          "total": 156,
+          "totalPages": 16
+        },
+        "timestamp": "2026-05-12T15:30:00Z",
+        "traceId": "req-abc123xyz789"
+      }
+    },
+    "createProducto": {
+      "descripcion": "POST /api/v1/productos - Crear nuevo producto",
+      "statusCode": 201,
+      "request": {
+        "codigo_ean": "4006381333931",
+        "nombre": "Laptop Dell XPS 13",
+        "descripcion": "Laptop ultraportátil de alta performance con pantalla OLED 4K, procesador Intel Core i7, 16GB RAM DDR5, SSD 512GB NVMe",
+        "precio": 1299.99,
+        "stock": 45
+      },
+      "response": {
+        "producto_id": 1,
+        "codigo_ean": "4006381333931",
+        "nombre": "Laptop Dell XPS 13",
+        "descripcion": "Laptop ultraportátil de alta performance con pantalla OLED 4K, procesador Intel Core i7, 16GB RAM DDR5, SSD 512GB NVMe",
+        "precio": 1299.99,
+        "stock": 45,
+        "created_at": "2026-05-12T15:30:00Z",
+        "updated_at": "2026-05-12T15:30:00Z"
+      }
+    },
+    "getProductoById": {
+      "descripcion": "GET /api/v1/productos/1 - Obtener producto por ID",
+      "statusCode": 200,
+      "response": {
+        "producto_id": 1,
+        "codigo_ean": "4006381333931",
+        "nombre": "Laptop Dell XPS 13",
+        "descripcion": "Laptop ultraportátil de alta performance con pantalla OLED 4K, procesador Intel Core i7, 16GB RAM DDR5, SSD 512GB NVMe",
+        "precio": 1299.99,
+        "stock": 45,
+        "created_at": "2026-05-01T08:15:30Z",
+        "updated_at": "2026-05-12T14:45:30Z"
+      }
+    },
+    "updateProducto": {
+      "descripcion": "PUT /api/v1/productos/1 - Actualizar producto",
+      "statusCode": 200,
+      "request": {
+        "nombre": "Laptop Dell XPS 13 - Actualizado",
+        "descripcion": "Laptop ultraportátil de alta performance con pantalla OLED 4K, procesador Intel Core i7, 32GB RAM DDR5, SSD 1TB NVMe",
+        "precio": 1499.99,
+        "stock": 40
+      },
+      "response": {
+        "producto_id": 1,
+        "codigo_ean": "4006381333931",
+        "nombre": "Laptop Dell XPS 13 - Actualizado",
+        "descripcion": "Laptop ultraportátil de alta performance con pantalla OLED 4K, procesador Intel Core i7, 32GB RAM DDR5, SSD 1TB NVMe",
+        "precio": 1499.99,
+        "stock": 40,
+        "created_at": "2026-05-01T08:15:30Z",
+        "updated_at": "2026-05-12T16:10:45Z"
+      }
+    },
+    "deleteProducto": {
+      "descripcion": "DELETE /api/v1/productos/1 - Eliminar producto",
+      "statusCode": 204,
+      "response": null
+    },
+    "errorValidacionRequest": {
+      "descripcion": "POST /api/v1/productos - Error de validación en request",
+      "statusCode": 400,
+      "response": {
+        "timestamp": "2026-05-12T15:32:00Z",
+        "traceId": "req-def456ghi012",
+        "status": 400,
+        "error": "Bad Request",
+        "codigo": "ERROR_VALIDACION",
+        "message": "Datos de entrada inválidos",
+        "path": "/api/v1/productos",
+        "details": [
+          {
+            "target": "codigo_ean",
+            "code": "INVALID_FORMAT",
+            "message": "El código EAN debe contener exactamente 13 dígitos"
+          },
+          {
+            "target": "precio",
+            "code": "INVALID_VALUE",
+            "message": "El precio debe ser mayor a 0"
+          },
+          {
+            "target": "nombre",
+            "code": "MIN_LENGTH_NOT_MET",
+            "message": "El nombre debe tener un mínimo de 3 caracteres"
+          }
+        ]
+      }
+    },
+    "errorCodigoEANDuplicado": {
+      "descripcion": "POST /api/v1/productos - Error: Código EAN ya existe",
+      "statusCode": 409,
+      "response": {
+        "timestamp": "2026-05-12T15:35:00Z",
+        "traceId": "req-jkl789mno345",
+        "status": 409,
+        "error": "Conflict",
+        "codigo": "CODIGO_EAN_DUPLICADO",
+        "message": "El código EAN 4006381333931 ya existe en el sistema",
+        "path": "/api/v1/productos",
+        "details": [
+          {
+            "target": "codigo_ean",
+            "code": "DUPLICATE_KEY",
+            "message": "Este código EAN ya está registrado para otro producto (ID: 1)"
+          }
+        ]
+      }
+    },
+    "errorProductoNoEncontrado": {
+      "descripcion": "GET /api/v1/productos/999 - Producto no encontrado",
+      "statusCode": 404,
+      "response": {
+        "timestamp": "2026-05-12T15:40:00Z",
+        "traceId": "req-pqr012stu789",
+        "status": 404,
+        "error": "Not Found",
+        "codigo": "PRODUCTO_NO_ENCONTRADO",
+        "message": "El producto con ID 999 no existe",
+        "path": "/api/v1/productos/999"
+      }
+    },
+    "errorServerInterno": {
+      "descripcion": "Error interno del servidor",
+      "statusCode": 500,
+      "response": {
+        "timestamp": "2026-05-12T15:45:00Z",
+        "traceId": "req-vwx345yza678",
+        "status": 500,
+        "error": "Internal Server Error",
+        "codigo": "ERROR_INTERNO",
+        "message": "Ocurrió un error inesperado. Por favor, intenta más tarde.",
+        "path": "/api/v1/productos"
+      }
+    }
+  },
+  "casos_uso": {
+    "busqueda_con_paginacion": {
+      "descripcion": "Buscar productos con paginación",
+      "endpoint": "GET /api/v1/productos?page=0&limit=5&search=laptop&sortBy=precio&sortDir=DESC",
+      "nota": "Retorna 5 productos por página, buscando 'laptop', ordenados por precio descendente"
+    },
+    "crear_producto": {
+      "descripcion": "Crear un nuevo producto",
+      "endpoint": "POST /api/v1/productos",
+      "nota": "El sistema genera automáticamente producto_id, created_at y updated_at"
+    },
+    "actualizar_stock": {
+      "descripcion": "Actualizar solo el stock de un producto",
+      "endpoint": "PUT /api/v1/productos/1",
+      "request": {
+        "stock": 35
+      },
+      "nota": "Se pueden actualizar solo los campos necesarios (no es obligatorio enviar todos)"
+    },
+    "eliminar_producto": {
+      "descripcion": "Eliminar un producto",
+      "endpoint": "DELETE /api/v1/productos/1",
+      "nota": "Retorna 204 No Content si es exitoso"
+    }
+  },
+  "notas_redis": {
+    "cache_strategy": "Los resultados de GET /api/v1/productos serán cacheados en Redis con TTL de 300 segundos",
+    "invalidation": "Al crear (POST), actualizar (PUT) o eliminar (DELETE) un producto, se invalida el cache automáticamente",
+    "key_pattern": "productos:{page}:{limit}:{search}:{sortBy}:{sortDir}",
+    "individual_cache": "GET /api/v1/productos/{id} usa cache con TTL de 600 segundos"
+  }
+}
