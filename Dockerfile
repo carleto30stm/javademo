@@ -4,16 +4,16 @@ FROM eclipse-temurin:21-jdk-alpine AS builder
 WORKDIR /workspace
 
 # Copiar archivos necesarios para Maven
-COPY mvnw .
-COPY mvnw.cmd .
-COPY .mvn .mvn
-COPY pom.xml .
+COPY mvnw mvnw
+COPY mvnw.cmd mvnw.cmd
+COPY .mvn/ .mvn/
+COPY pom.xml pom.xml
 
 # Copiar código fuente
-COPY src src
+COPY src/ src/
 
 # Compilar y empaquetar
-RUN chmod +x mvnw && ./mvnw clean package -DskipTests -q
+RUN chmod +x mvnw && ./mvnw clean package -DskipTests
 
 # Stage 2: Runtime
 FROM eclipse-temurin:21-jre-alpine
