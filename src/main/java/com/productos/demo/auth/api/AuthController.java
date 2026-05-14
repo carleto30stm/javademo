@@ -33,6 +33,9 @@ public class AuthController {
     @Value("${jwt.cookie.secure:false}")
     private boolean secureCookie;
 
+    @Value("${jwt.cookie.same-site:Lax}")
+    private String cookieSameSite;
+
     @PostMapping("/login")
     public ResponseEntity<AuthUserResponse> login(@Valid @RequestBody LoginRequest request,
                                                    HttpServletResponse response) {
@@ -45,7 +48,7 @@ public class AuthController {
         ResponseCookie cookie = ResponseCookie.from("access_token", token)
                 .httpOnly(true)          // NO accesible desde JavaScript
                 .secure(secureCookie)    // true en producción (HTTPS)
-                .sameSite("Lax")         // protección CSRF para navegadores modernos
+                .sameSite(cookieSameSite) // Lax en local, None en prod (cross-domain)
                 .path("/")
                 .maxAge(Duration.ofDays(1))
                 .build();
@@ -61,7 +64,7 @@ public class AuthController {
         ResponseCookie cookie = ResponseCookie.from("access_token", "")
                 .httpOnly(true)
                 .secure(secureCookie)
-                .sameSite("Lax")
+                .sameSite(cookieSameSite)
                 .path("/")
                 .maxAge(0)   // borra la cookie
                 .build();
