@@ -22,15 +22,17 @@ public class CorsConfig {
 
         List<String> origins = Arrays.asList(allowedOrigins);
         if (origins.contains("*")) {
-            // allowedOriginPatterns acepta wildcard con allowCredentials=true
+            // Si se intenta usar wildcard, permitir solo en desarrollo sin credenciales
             config.setAllowedOriginPatterns(List.of("*"));
+            config.setAllowCredentials(false); // NO se puede usar * con credenciales
         } else {
+            // En producción, usar origins específicos Y credenciales
             config.setAllowedOrigins(origins);
+            config.setAllowCredentials(true); // Obligatorio para enviar cookies HttpOnly
         }
 
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(true); // obligatorio para enviar cookies HttpOnly
         config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
