@@ -39,6 +39,10 @@ public class SecurityConfig {
                     "/api/v1/swagger-ui/**",
                     "/api/v1/swagger-ui.html"
                 ).permitAll()
+                .requestMatchers(
+                    "/api/v1/exchange-rates/**",
+                    "/api/v1/productos/*/precio-convertido"
+                ).authenticated()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

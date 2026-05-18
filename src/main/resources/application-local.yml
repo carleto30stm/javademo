@@ -35,3 +35,30 @@ spring:
     type: redis
     redis:
       time-to-live: 600000
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    connection-timeout: 5000
+    listener:
+      simple:
+        retry:
+          enabled: true
+          initial-interval: 10000
+          max-retries: 5
+          multiplier: 2.0
+          max-interval: 60000
+        recovery-interval: 30000
+
+exchange-rate:
+  api:
+    base-url: https://open.er-api.com/v6/latest
+    base-currency: USD
+  schedule:
+    cron: "0 */30 * * * *"
+  alert:
+    threshold-pct: 2.0
+  cache:
+    ttl-minutes: 60
+  supported-currencies: EUR,MXN,GBP,COP

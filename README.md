@@ -1,6 +1,11 @@
 
 Este repositorio contiene la implementación del Backend para el **Módulo de Gestión de Productos*, desarrollado con **Java 21** y **Spring Boot**.
 
+## RabbitMQ ##
+levantar rabbit localmente antes de levantar el proyecto
+Rabbit corre en ` localhost:5672 ` y la UI de gestion en ` localhost:15672 ` guest
+    `docker-compose up -d rabbitmq`
+
 ## Redis##
 levantar redis localmente antes de levantar el proyecto
     `docker-compose up -d`
