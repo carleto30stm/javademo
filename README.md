@@ -1,3 +1,4 @@
+[![CI](https://github.com/carleto30stm/javaDemo/actions/workflows/ci.yml/badge.svg)](https://github.com/carleto30stm/javaDemo/actions/workflows/ci.yml)
 
 Este repositorio contiene la implementación del Backend para el **Módulo de Gestión de Productos*, desarrollado con **Java 21** y **Spring Boot**.
 
